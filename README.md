@@ -5,12 +5,12 @@ Yes, it's still called that until I get around to renaming EVERYTHING. This READ
 ## Installation ##
 
 After installing the correct libraries, I have been using this method to install/run on my PC:
-	Compile:
-		g++ -g -c src/*.cpp -I /usr/include/sigc++-2.0 -I /usr/lib/x86_64-linux-gnu/sigc++-2.0/include/ -std=c++11
-	Link:
-		g++ -o StarshipFontana *.o -lSDL -lSDL_image
-	Run:
-		./StarshipFontana
+Compile:
+g++ -g -c src/*.cpp -I /usr/include/sigc++-2.0 -I /usr/lib/x86_64-linux-gnu/sigc++-2.0/include/ -std=c++11
+Link:
+g++ -o StarshipFontana *.o -lSDL -lSDL_image
+Run:
+./StarshipFontana
 
 I assume on a correctly setup Fedora machine, you'll only have to use g++ -g -c src/*.cpp -std=c++11 to compile.
 

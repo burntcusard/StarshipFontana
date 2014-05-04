@@ -25,7 +25,9 @@ public:
   int     OnExecute();
   void    OnUpdateWorld();
   void    OnRender();
-
+	
+	void		NewCoin();
+	
   void    FireProjectile();
 private:
   SDL_Surface           * surface;
@@ -38,6 +40,11 @@ private:
   list<shared_ptr<SFAsset> > coins;
 
   int fire;
+  
+  int points;  // Value set line 3 of SFApp.cpp, don't know if other things should be set there too.
+  int gameSpeed = 10; // 60 = 1 tick a second
+	int gameTick = 0;
+	int movementAmount = 32; // Got to put this in GoNorth like Vector2(0.0f, movementAmount)
 
   SFError OnInit();
 };

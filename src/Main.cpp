@@ -21,7 +21,7 @@ Uint32 PushUpdateEvent(Uint32 interval, void *param) {
 
 SFError InitGraphics() {
   Uint32 width = 640;
-  Uint32 height = 480;
+  Uint32 height = 640;
   Uint32 colour_depth = 16; // in bits
   Uint32 delay = 1000/60; // in milliseconds
   

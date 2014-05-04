@@ -35,6 +35,19 @@ public:
   virtual void      GoEast();
   virtual void      GoWest();
   virtual void      GoNorth();
+  virtual void    	GoSouth();
+  
+  virtual void      FaceEast();
+  virtual void      FaceWest();
+  virtual void      FaceNorth();
+  virtual void    	FaceSouth();
+  
+  virtual bool      FacingEast();
+  virtual bool      FacingWest();
+  virtual bool      FacingNorth();
+  virtual bool    	FacingSouth(); 
+  virtual void 			CanChangeDirectionAgain();
+  
   virtual void      SetNotAlive();
   virtual bool      IsAlive();
   virtual void      HandleCollision();
@@ -50,7 +63,13 @@ private:
   shared_ptr<SFBoundingBox>   bbox;
   SFASSETTYPE                 type;
   SFAssetId                   id;
-
+  
+  bool	facingNorth;
+  bool	facingSouth;
+  bool	facingEast;
+  bool	facingWest;  
+  bool 	canChangeDirection = true;
+	
   static int SFASSETID;
 };
 

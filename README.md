@@ -1,34 +1,21 @@
 # Starship Fontana #
 
-This is an example C++ application using the SDL library.
-It tries to be as nicely C++11 as possible but do keep in
-mind that SDL is written in C and, at some stage, you have
-to interface with it.
-
-## Story ##
-The evil b’Kuhn has stolen the code to Earth’s defence system.
-With this code he can, at any time, defeat the entire human race.
-Only one woman is brave enough to go after b’Kuhn. Will she be
-Earth’s hero? Puzzle your way though the universe in the company
-of Commander Fontana in **Starship Fontana**.
+Yes, it's still called that until I get around to renaming EVERYTHING. This README will be updated severely as well.
 
 ## Installation ##
-You will have to have the SDL development libraries installed on
-your system.  The easiest way to compile is to use a command-line
 
-`$ g++ -c src/Main.cpp`
-`$ g++ -o starship src/Main.o -lSDL -lSDL_image`
+After installing the correct libraries, I have been using this method to install/run on my PC:
+	Compile:
+		g++ -g -c src/*.cpp -I /usr/include/sigc++-2.0 -I /usr/lib/x86_64-linux-gnu/sigc++-2.0/include/ -std=c++11
+	Link:
+		g++ -o StarshipFontana *.o -lSDL -lSDL_image
+	Run:
+		./StarshipFontana
 
-which will produce an executable file called "starship" in the
-top-level directory.  To execute this file do the following
-
-`$ ./starship`
- 
-from the top-level directory.  The game will expect to find the
-`assets` directory under its current working directory.
+I assume on a correctly setup Fedora machine, you'll only have to use g++ -g -c src/*.cpp -std=c++11 to compile.
 
 ## Credits ##
-The sprites in this game come directly from 
+The placeholder sprites (not the "P" and the coin) that are still left in come directly from 
 [SpriteLib](http://www.widgetworx.com/widgetworx/portfolio/spritelib.html) and are used
 under the terms of the [CPL 1.0](http://opensource.org/licenses/cpl1.0.php).
 

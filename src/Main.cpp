@@ -20,8 +20,8 @@ Uint32 PushUpdateEvent(Uint32 interval, void *param) {
 }
 
 SFError InitGraphics() {
-  Uint32 width = (32*20);
-  Uint32 height = (32*20);
+  Uint32 width = (32*20); // 32 pixels per grid section, 20*20 grid.
+  Uint32 height = (32*20); // grid size may be loaded in from external level file later.
   Uint32 colour_depth = 16; // in bits
   Uint32 delay = 1000/60; // in milliseconds
   

@@ -137,6 +137,9 @@ void SFApp::OnUpdateWorld() {
 				cout << "CONGRADULATIONS! You win!" << endl;
 				// Replace following line with some message or fireworks or crap showing you won
 				cout << "The test is now over, YOU DON'T NEED ANY MORE POINTS." << endl;
+				std::stringstream sstm;
+	  		sstm << "You win! Points: " << points-3; //Players start with 3 points, because head +3 body parts.
+	  		SDL_WM_SetCaption(sstm.str().c_str(),  sstm.str().c_str());
 			} else {
 				if (gameSpeed > 1) {
 					gameSpeed--;

@@ -5,6 +5,7 @@ SFApp::SFApp() : points(3), is_running(true) {
   surface = SDL_GetVideoSurface();
   app_box = make_shared<SFBoundingBox>(Vector2(surface->w/2, surface->h/2), surface->w/2, surface->h/2);
   player  = make_shared<SFAsset>(SFASSET_PLAYER);
+  // Player is 30x30, Point2 -'s are to get them aligned to grid properly
   auto player_pos = Point2((surface->w/2)-16, (surface->h/2)-18);
   player->SetPosition(player_pos);
 	
@@ -131,7 +132,7 @@ void SFApp::OnUpdateWorld() {
   	if(player->CollidesWith(c)) {
 			fire++;
 			points++;
-			cout << "Number of points : " << points << ". Game speed: " << gameSpeed << endl;
+			cout << "Number of points : " << (points-3) << ". Game speed: " << gameSpeed << endl;
 			if (gameSpeed == 1) {
 				cout << "CONGRADULATIONS! You win!" << endl;
 				// Replace following line with some message or fireworks or crap showing you won

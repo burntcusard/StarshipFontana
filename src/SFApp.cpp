@@ -8,7 +8,15 @@ SFApp::SFApp() : points(3), is_running(true) {
   // Player is 30x30, Point2 -'s are to get them aligned to grid properly
   auto player_pos = Point2((surface->w/2)-16, (surface->h/2)-18);
   player->SetPosition(player_pos);
-	
+  
+  int numberOfTails = 1; // This is temporary until no. of tails is linked to points
+  for(int i=1; i<=numberOfTails; i++) {
+  	auto playerTail = make_shared<SFAsset>(SFASSET_TAIL);
+  	auto pos 				= Point2((surface->w/2)-16, ((surface->h/2)-18)+(32*i));
+  	playerTail->SetPosition(pos);
+  	playerTails.push_back(playerTail);
+  }
+  
 //    const int number_of_aliens = 10;
 //    for(int i=0; i<number_of_aliens; i++) {
     // place an alien at width/number_of_aliens * i
@@ -104,6 +112,11 @@ void SFApp::OnUpdateWorld() {
 		}
 	}
 
+	// Update tail(s)
+	for(auto t: playerTails) {
+		// Go to location of tail-1 or head if tail section clostest to head
+	}
+
   // Update projectile positions
   for(auto p: projectiles) {
     p->GoNorth();
@@ -153,7 +166,16 @@ void SFApp::OnUpdateWorld() {
   		NewCoin();
   	}
   }
-
+  
+	// Detect if player collides with a tail section
+	list<shared_ptr<SFAsset>> tailsTmp;
+	for(auto t : playerTails) {
+		if(player->CollidesWith(t)) {
+			cout << "You crashed you dead :(" << endl;
+		}
+	}
+	
+	
 	// Remove collected coins
   list<shared_ptr<SFAsset>> coinsTmp;
 	for(auto c : coins) {
@@ -181,6 +203,10 @@ void SFApp::OnRender() {
 
   // draw the player
   player->OnRender(surface);
+
+  for(auto t: playerTails) {
+    if(t->IsAlive()) {t->OnRender(surface);}
+  }
 
   for(auto p: projectiles) {
     if(p->IsAlive()) {p->OnRender(surface);}

@@ -175,6 +175,10 @@ void SFApp::OnUpdateWorld() {
 		if(player->CollidesWith(t)) {
 			cout << "You crashed you dead :(" << endl;
 			paused = true;
+			player->SetNotAlive();
+			deadPlayer  = make_shared<SFAsset>(SFASSET_DEADPLAYER);
+  		auto deadPlayer_pos = player->GetPosition();
+  		deadPlayer->SetPosition(deadPlayer_pos);
 		}
 	}
 	
@@ -203,9 +207,6 @@ void SFApp::OnRender() {
   // clear the surface
   SDL_FillRect(surface, NULL, SDL_MapRGB(surface->format, 54, 54, 54) );
 
-  // draw the player
-  player->OnRender(surface);
-
   for(auto t: playerTails) {
     if(t->IsAlive()) {t->OnRender(surface);}
   }
@@ -220,6 +221,14 @@ void SFApp::OnRender() {
 
   for(auto c: coins) {
     if(c->IsAlive()) {c->OnRender(surface);}
+  }
+  
+  // If player is alive, render it, otherwise render the dead player. Position after other OnRenders
+  // because it has to be ON TOP of other things if they overlap.
+  if(player->IsAlive()) {
+  	player->OnRender(surface);
+  } else {
+  	deadPlayer->OnRender(surface);
   }
 
   // Switch the off-screen buffer to be on-screen

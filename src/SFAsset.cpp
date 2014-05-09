@@ -12,7 +12,10 @@ SFAsset::SFAsset(SFASSETTYPE type) {
     tmp_surf = IMG_Load("assets/player.png");
     break;
   case SFASSET_TAIL:
-    tmp_surf = IMG_Load("assets/player.png");
+    tmp_surf = IMG_Load("assets/tail.png");
+    break;
+  case SFASSET_DEADPLAYER:
+    tmp_surf = IMG_Load("assets/deadPlayer.png");
     break;
   case SFASSET_PROJECTILE:
     tmp_surf = IMG_Load("assets/projectile.png");

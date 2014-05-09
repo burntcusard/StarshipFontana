@@ -36,6 +36,7 @@ private:
   bool										paused;
 
   shared_ptr<SFAsset>        player;
+  shared_ptr<SFAsset>        deadPlayer;
   shared_ptr<SFBoundingBox>  app_box;
   list<shared_ptr<SFAsset> > playerTails;
   list<shared_ptr<SFAsset> > projectiles;

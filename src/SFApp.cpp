@@ -57,19 +57,35 @@ void SFApp::OnEvent(SFEvent& event) {
     break;
   case SFEVENT_PLAYER_UP:
   	paused = false;
-    player->FaceNorth();
+  	if(player->IsAlive()) {
+    	player->FaceNorth();
+    } else {
+    	player->FaceSouth();
+    }
     break;
   case SFEVENT_PLAYER_DOWN:
   	paused = false;
-    player->FaceSouth();
+  	if(player->IsAlive()) {
+    	player->FaceSouth();
+    } else {
+    	player->FaceNorth();
+    }
     break;
   case SFEVENT_PLAYER_LEFT:
   	paused = false;
-    player->FaceWest();
+  	if(player->IsAlive()) {
+    	player->FaceWest();
+    } else {
+    	player->FaceEast();
+    }
     break;
   case SFEVENT_PLAYER_RIGHT:
   	paused = false;
-    player->FaceEast();
+  	if(player->IsAlive()) {
+    	player->FaceEast();
+    } else {
+    	player->FaceWest();
+    }
     break;
 /*  case SFEVENT_FIRE:
     fire ++;

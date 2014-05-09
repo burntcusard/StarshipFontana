@@ -27,11 +27,13 @@ public:
   void    OnRender();
 	
 	void		NewCoin();
+	void		UpdateTail();
 	
   void    FireProjectile();
 private:
   SDL_Surface           * surface;
   bool                    is_running;
+  bool										paused;
 
   shared_ptr<SFAsset>        player;
   shared_ptr<SFBoundingBox>  app_box;
@@ -42,8 +44,8 @@ private:
 
   int fire;
   
-  int points;  // Value set line 3 of SFApp.cpp, don't know if other things should be set there too.
-  int gameSpeed = 10; // 60 = 1 tick a second
+  int points = 0; // Player starts with 0 points!
+  int gameSpeed = 15; // 60 = 1 tick a second
 	int gameTick = 0;
 	int movementAmount = 32; // Got to put this in GoNorth like Vector2(0.0f, movementAmount)
 

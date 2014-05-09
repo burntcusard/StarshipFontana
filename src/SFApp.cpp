@@ -1,6 +1,6 @@
 #include "SFApp.h"
 
-SFApp::SFApp() : points(3), is_running(true) {
+SFApp::SFApp() : points(0), is_running(true) {
 
   surface = SDL_GetVideoSurface();
   app_box = make_shared<SFBoundingBox>(Vector2(surface->w/2, surface->h/2), surface->w/2, surface->h/2);
@@ -9,10 +9,10 @@ SFApp::SFApp() : points(3), is_running(true) {
   auto player_pos = Point2((surface->w/2)-16, (surface->h/2)-18);
   player->SetPosition(player_pos);
   
-  int numberOfTails = 1; // This is temporary until no. of tails is linked to points
-  for(int i=1; i<=numberOfTails; i++) {
+  //int numberOfTails = 1; // This is temporary until no. of tails is linked to points
+  for(int i=1; i<=points+2; i++) {
   	auto playerTail = make_shared<SFAsset>(SFASSET_TAIL);
-  	auto pos 				= Point2((surface->w/2)-16, ((surface->h/2)-18)+(32*i));
+  	auto pos 				= Point2((surface->w/2)-16, ((surface->h/2)-18)-(32*i));
   	playerTail->SetPosition(pos);
   	playerTails.push_back(playerTail);
   }
@@ -32,8 +32,8 @@ SFApp::SFApp() : points(3), is_running(true) {
 //  auto pos  = Point2((surface->w/4), 100);
 //  coin->SetPosition(pos);
 //  coins.push_back(coin);
-	NewCoin();
-	
+	NewCoin();	
+	paused = true;
 }
 
 SFApp::~SFApp() {
@@ -50,19 +50,25 @@ void SFApp::OnEvent(SFEvent& event) {
     is_running = false;
     break;
   case SFEVENT_UPDATE:
-    OnUpdateWorld();
-    OnRender();
+  	if (!paused) {
+		  OnUpdateWorld();
+		}
+		OnRender();
     break;
   case SFEVENT_PLAYER_UP:
+  	paused = false;
     player->FaceNorth();
     break;
   case SFEVENT_PLAYER_DOWN:
+  	paused = false;
     player->FaceSouth();
     break;
   case SFEVENT_PLAYER_LEFT:
+  	paused = false;
     player->FaceWest();
     break;
   case SFEVENT_PLAYER_RIGHT:
+  	paused = false;
     player->FaceEast();
     break;
 /*  case SFEVENT_FIRE:
@@ -93,11 +99,12 @@ void SFApp::OnUpdateWorld() {
 	gameTick++;
 	if (gameTick > gameSpeed) {
 		gameTick = 0;
-		player->CanChangeDirectionAgain();
 	}
 
 	// Make player move every tick
 	if (gameTick == 0) {
+		UpdateTail();
+		player->CanChangeDirectionAgain();
 		if (player->FacingNorth()) {
 			player->GoNorth();
 		}
@@ -110,11 +117,6 @@ void SFApp::OnUpdateWorld() {
 		if (player->FacingWest()) {
 			player->GoWest();
 		}
-	}
-
-	// Update tail(s)
-	for(auto t: playerTails) {
-		// Go to location of tail-1 or head if tail section clostest to head
 	}
 
   // Update projectile positions
@@ -145,25 +147,25 @@ void SFApp::OnUpdateWorld() {
   	if(player->CollidesWith(c)) {
 			fire++;
 			points++;
-			cout << "Number of points : " << (points-3) << ". Game speed: " << gameSpeed << endl;
+			cout << "Number of points : " << (points) << ". Game speed: " << gameSpeed << endl;
 			if (gameSpeed == 1) {
 				cout << "CONGRADULATIONS! You win!" << endl;
 				// Replace following line with some message or fireworks or crap showing you won
 				cout << "The test is now over, YOU DON'T NEED ANY MORE POINTS." << endl;
 				std::stringstream sstm;
-	  		sstm << "You win! Points: " << points-3; //Players start with 3 points, because head +3 body parts.
+	  		sstm << "You win! Points: " << points;
 	  		SDL_WM_SetCaption(sstm.str().c_str(),  sstm.str().c_str());
 			} else {
 				if (gameSpeed > 1) {
 					gameSpeed--;
 					// The more points you have, the faster the game will get
 					std::stringstream sstm;
-		  		sstm << "Points: " << points-3; //Players start with 3 points, because head +3 body parts.
+		  		sstm << "Points: " << points;
 		  		SDL_WM_SetCaption(sstm.str().c_str(),  sstm.str().c_str());
 				}
-			}
-  		c->HandleCollision();
-  		NewCoin();
+			}			
+  		c->HandleCollision(); // Remove old coin
+  		NewCoin(); // Spawn a new coin
   	}
   }
   
@@ -172,9 +174,9 @@ void SFApp::OnUpdateWorld() {
 	for(auto t : playerTails) {
 		if(player->CollidesWith(t)) {
 			cout << "You crashed you dead :(" << endl;
+			paused = true;
 		}
 	}
-	
 	
 	// Remove collected coins
   list<shared_ptr<SFAsset>> coinsTmp;
@@ -229,6 +231,21 @@ void SFApp::FireProjectile() {
   auto v  = player->GetPosition();
   pb->SetPosition(v);
   projectiles.push_back(pb);
+}
+
+void SFApp::UpdateTail() {
+// Makes the tail follow the players head around.
+	auto headTail = make_shared<SFAsset>(SFASSET_TAIL); // Make new tail section
+	auto v = player->GetPosition();											// Get position of players head
+	headTail->SetPosition(v);														// Give new tail section the location of players head
+	playerTails.emplace_front(headTail);								// Put new tail section at front of tail list
+	// Found out about emplace_front from: http://www.cplusplus.com/reference/list/list/emplace_front/
+	
+	if (points < playerTails.size()-2) { // Player starts with 2 tail sections
+		playerTails.pop_back();	// Remove last tail section
+	} else {
+	// Player got a point so tail is one longer
+	}
 }
 
 void SFApp::NewCoin() {

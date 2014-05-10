@@ -28,8 +28,7 @@ public:
 	
 	void		NewCoin();
 	void		UpdateTail();
-	
-  void    FireProjectile();
+
 private:
   SDL_Surface           * surface;
   bool                    is_running;
@@ -39,11 +38,7 @@ private:
   shared_ptr<SFAsset>        deadPlayer;
   shared_ptr<SFBoundingBox>  app_box;
   list<shared_ptr<SFAsset> > playerTails;
-  list<shared_ptr<SFAsset> > projectiles;
-  list<shared_ptr<SFAsset> > aliens;
   list<shared_ptr<SFAsset> > coins;
-
-  int fire;
   
   int points = 0; // Player starts with 0 points!
   int gameSpeed = 15; // 60 = 1 tick a second

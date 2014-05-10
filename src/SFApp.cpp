@@ -17,21 +17,8 @@ SFApp::SFApp() : points(0), is_running(true) {
   	playerTails.push_back(playerTail);
   }
   
-//    const int number_of_aliens = 10;
-//    for(int i=0; i<number_of_aliens; i++) {
-    // place an alien at width/number_of_aliens * i
-//    auto alien = make_shared<SFAsset>(SFASSET_ALIEN);
-//    auto pos   = Point2((surface->w/number_of_aliens) * i, 200.0f);
-//    alien->SetPosition(pos);
-//    aliens.push_back(alien);
-//  }
-
   srand (time(NULL)); // initialize random seed
 
-//  auto coin = make_shared<SFAsset>(SFASSET_COIN);
-//  auto pos  = Point2((surface->w/4), 100);
-//  coin->SetPosition(pos);
-//  coins.push_back(coin);
 	NewCoin();	
 	paused = true;
 }
@@ -57,44 +44,20 @@ void SFApp::OnEvent(SFEvent& event) {
     break;
   case SFEVENT_PLAYER_UP:
   	paused = false;
-  	if(player->IsAlive()) {
-    	player->FaceNorth();
-    } else {
-    	player->FaceSouth();
-    }
+   	player->FaceNorth();
     break;
   case SFEVENT_PLAYER_DOWN:
   	paused = false;
-  	if(player->IsAlive()) {
-    	player->FaceSouth();
-    } else {
-    	player->FaceNorth();
-    }
+    player->FaceSouth();
     break;
   case SFEVENT_PLAYER_LEFT:
   	paused = false;
-  	if(player->IsAlive()) {
-    	player->FaceWest();
-    } else {
-    	player->FaceEast();
-    }
+    player->FaceWest();
     break;
   case SFEVENT_PLAYER_RIGHT:
   	paused = false;
-  	if(player->IsAlive()) {
-    	player->FaceEast();
-    } else {
-    	player->FaceWest();
-    }
+    player->FaceEast();
     break;
-/*  case SFEVENT_FIRE:
-    fire ++;
-    std::stringstream sstm;
-    sstm << "Fire " << fire;
-    SDL_WM_SetCaption(sstm.str().c_str(),  sstm.str().c_str());
-    FireProjectile();
-    break;
-*/
   }
 }
 
@@ -134,34 +97,20 @@ void SFApp::OnUpdateWorld() {
 			player->GoWest();
 		}
 	}
-
-  // Update projectile positions
-  for(auto p: projectiles) {
-    p->GoNorth();
-  }
-
-  for(auto c: coins) {
-    // coins do nothing yet
-  }
-
-  // Update enemy positions
-  for(auto a : aliens) {
-    // do something here
-  }
-
-  // Detect collisions
-  for(auto p : projectiles) {
-    for(auto a : aliens) {
-      if(p->CollidesWith(a)) {
-        p->HandleCollision();
-        a->HandleCollision();
-      }
-    }
-  }
+ 
+  // Detect if coin is placed (or somehow ends up in) a tail section
+  for(auto c : coins) {
+  	for(auto t : playerTails) {
+  		if(c->CollidesWith(t)) {
+  			c->HandleCollision();
+  			NewCoin();
+  		}
+  	}
+  }		
+  
   // Detect if player collides with coin
   for(auto c : coins) {
   	if(player->CollidesWith(c)) {
-			fire++;
 			points++;
 			cout << "Number of points : " << (points) << ". Game speed: " << gameSpeed << endl;
 			if (gameSpeed == 1) {
@@ -208,15 +157,6 @@ void SFApp::OnUpdateWorld() {
 	coins.clear();
   coins = list<shared_ptr<SFAsset>>(coinsTmp);
 
-  // remove dead aliens (the long way)
-  list<shared_ptr<SFAsset>> tmp;
-  for(auto a : aliens) {
-    if(a->IsAlive()) {
-      tmp.push_back(a);
-    }
-  }
-  aliens.clear();
-  aliens = list<shared_ptr<SFAsset>>(tmp);
 }
 
 void SFApp::OnRender() {
@@ -225,14 +165,6 @@ void SFApp::OnRender() {
 
   for(auto t: playerTails) {
     if(t->IsAlive()) {t->OnRender(surface);}
-  }
-
-  for(auto p: projectiles) {
-    if(p->IsAlive()) {p->OnRender(surface);}
-  }
-
-  for(auto a: aliens) {
-    if(a->IsAlive()) {a->OnRender(surface);}
   }
 
   for(auto c: coins) {
@@ -249,13 +181,6 @@ void SFApp::OnRender() {
 
   // Switch the off-screen buffer to be on-screen
   SDL_Flip(surface);
-}
-
-void SFApp::FireProjectile() {
-  auto pb = make_shared<SFAsset>(SFASSET_PROJECTILE);
-  auto v  = player->GetPosition();
-  pb->SetPosition(v);
-  projectiles.push_back(pb);
 }
 
 void SFApp::UpdateTail() {

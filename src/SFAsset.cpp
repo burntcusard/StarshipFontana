@@ -17,12 +17,6 @@ SFAsset::SFAsset(SFASSETTYPE type) {
   case SFASSET_DEADPLAYER:
     tmp_surf = IMG_Load("assets/deadPlayer.png");
     break;
-  case SFASSET_PROJECTILE:
-    tmp_surf = IMG_Load("assets/projectile.png");
-    break;
-  case SFASSET_ALIEN:
-    tmp_surf = IMG_Load("assets/alien.png");
-    break;
   case SFASSET_COIN:
     tmp_surf = IMG_Load("assets/coin.png");
     break;
@@ -226,7 +220,7 @@ bool SFAsset::IsAlive() {
 }
 
 void SFAsset::HandleCollision() {
-  if(SFASSET_PROJECTILE == type || SFASSET_ALIEN == type || SFASSET_COIN == type) {
+  if(SFASSET_COIN == type) {
     SetNotAlive();
   }
 }

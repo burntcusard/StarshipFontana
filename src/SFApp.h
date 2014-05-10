@@ -33,12 +33,14 @@ private:
   SDL_Surface           * surface;
   bool                    is_running;
   bool										paused;
+  bool										restart;
 
   shared_ptr<SFAsset>        player;
   shared_ptr<SFAsset>        deadPlayer;
   shared_ptr<SFBoundingBox>  app_box;
   list<shared_ptr<SFAsset> > playerTails;
   list<shared_ptr<SFAsset> > coins;
+  list<shared_ptr<SFAsset> > walls;
   
   int points = 0; // Player starts with 0 points!
   int gameSpeed = 15; // 60 = 1 tick a second

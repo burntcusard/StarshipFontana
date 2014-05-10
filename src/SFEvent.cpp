@@ -26,7 +26,7 @@ SFEvent::SFEvent(const SDL_Event & event) {
       code = SFEVENT_PLAYER_RIGHT;
       break;
     case SDLK_SPACE:
-      code = SFEVENT_FIRE;
+      code = SFEVENT_RESTART;
       break;
     case SDLK_q:
       code = SFEVENT_QUIT;

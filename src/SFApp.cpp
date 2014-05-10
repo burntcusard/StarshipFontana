@@ -1,15 +1,14 @@
 #include "SFApp.h"
 
 SFApp::SFApp() : points(0), is_running(true) {
-
+	
   surface = SDL_GetVideoSurface();
   app_box = make_shared<SFBoundingBox>(Vector2(surface->w/2, surface->h/2), surface->w/2, surface->h/2);
   player  = make_shared<SFAsset>(SFASSET_PLAYER);
   // Player is 30x30, Point2 -'s are to get them aligned to grid properly
   auto player_pos = Point2((surface->w/2)-16, (surface->h/2)-18);
   player->SetPosition(player_pos);
-  
-  //int numberOfTails = 1; // This is temporary until no. of tails is linked to points
+
   for(int i=1; i<=points+2; i++) {
   	auto playerTail = make_shared<SFAsset>(SFASSET_TAIL);
   	auto pos 				= Point2((surface->w/2)-16, ((surface->h/2)-18)-(32*i));
@@ -35,7 +34,12 @@ void SFApp::OnEvent(SFEvent& event) {
   switch (the_event) {
   case SFEVENT_QUIT:
     is_running = false;
+    restart = false;
     break;
+  case SFEVENT_RESTART:
+  	//is_running = false;
+  	restart = true;
+  	break;
   case SFEVENT_UPDATE:
   	if (!paused) {
 		  OnUpdateWorld();
@@ -98,18 +102,22 @@ void SFApp::OnUpdateWorld() {
 		}
 	}
  
-  // Detect if coin is placed (or somehow ends up in) a tail section
+  // Detect coin collisions
   for(auto c : coins) {
-  	for(auto t : playerTails) {
+  	// Detect if coin is placed (or somehow ends up in) a tail section or wall
+    for(auto t : playerTails) {
   		if(c->CollidesWith(t)) {
   			c->HandleCollision();
   			NewCoin();
   		}
   	}
-  }		
-  
-  // Detect if player collides with coin
-  for(auto c : coins) {
+  	for(auto w : walls) {
+  		if(c->CollidesWith(w)) {
+    		c->HandleCollision();
+  			NewCoin();
+  		}
+  	}
+  	// Detect if the player noms a coin
   	if(player->CollidesWith(c)) {
 			points++;
 			cout << "Number of points : " << (points) << ". Game speed: " << gameSpeed << endl;
@@ -133,17 +141,28 @@ void SFApp::OnUpdateWorld() {
   		NewCoin(); // Spawn a new coin
   	}
   }
-  
-	// Detect if player collides with a tail section
-	list<shared_ptr<SFAsset>> tailsTmp;
-	for(auto t : playerTails) {
-		if(player->CollidesWith(t)) {
+
+	// Detect if player collides with wall
+	for(auto w : walls) {
+		if(player->CollidesWith(w)){
 			cout << "You crashed you dead :(" << endl;
 			paused = true;
 			player->SetNotAlive();
 			deadPlayer  = make_shared<SFAsset>(SFASSET_DEADPLAYER);
-  		auto deadPlayer_pos = player->GetPosition();
-  		deadPlayer->SetPosition(deadPlayer_pos);
+			auto deadPlayer_pos = player->GetPosition();
+			deadPlayer->SetPosition(deadPlayer_pos);
+		}
+	}
+
+	// Detect if player collides with tail section
+	for(auto t : playerTails) {
+		if(player->CollidesWith(t)){
+			cout << "You crashed you dead :(" << endl;
+			paused = true;
+			player->SetNotAlive();
+			deadPlayer  = make_shared<SFAsset>(SFASSET_DEADPLAYER);
+			auto deadPlayer_pos = player->GetPosition();
+			deadPlayer->SetPosition(deadPlayer_pos);
 		}
 	}
 	
@@ -171,7 +190,7 @@ void SFApp::OnRender() {
     if(c->IsAlive()) {c->OnRender(surface);}
   }
   
-  // If player is alive, render it, otherwise render the dead player. Position after other OnRenders
+  // If player is alive, render it, otherwise render the dead player. Positioned after other OnRenders
   // because it has to be ON TOP of other things if they overlap.
   if(player->IsAlive()) {
   	player->OnRender(surface);
@@ -189,7 +208,7 @@ void SFApp::UpdateTail() {
 	auto v = player->GetPosition();											// Get position of players head
 	headTail->SetPosition(v);														// Give new tail section the location of players head
 	playerTails.emplace_front(headTail);								// Put new tail section at front of tail list
-	// Found out about emplace_front from: http://www.cplusplus.com/reference/list/list/emplace_front/
+	// Found out about emplace_front from: http://www.cplusplus.com/reference/list/list/emplace_front/ Is nice.
 	
 	if (points < playerTails.size()-2) { // Player starts with 2 tail sections
 		playerTails.pop_back();	// Remove last tail section

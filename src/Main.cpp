@@ -52,13 +52,13 @@ int main(int arc, char ** argv) {
   } catch (SFError e) {
     return e;
   }
-
+  
   // Initialise world
   sfapp = shared_ptr<SFApp>(new SFApp());
 
   // Set up top-level timer to UpdateWorld
   // Call the function "display" every delay milliseconds
-  int delay = 1000/60; // 1000 milis in a second, divide by 60 - the framerate
+  int delay = 1000/60; // 1000 milis in a second, divide by 60 - the framerate. !There are two delays D: !
   SDL_AddTimer(delay, PushUpdateEvent, NULL);
 
   // Start game loop
